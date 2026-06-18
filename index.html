@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💎 Diamond Shop BD</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#0a0a0a;--surface:#141414;--card:#1c1c1c;--card2:#222;--text:#ffffff;--muted:#888;--accent:#ff6b00;--accent2:#9b59b6;--border:#2a2a2a;--danger:#e74c3c;--success:#27ae60}
+  body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+  body.theme-white{--bg:#f0f0f0;--surface:#fff;--card:#fff;--card2:#f8f8f8;--text:#111;--muted:#666;--border:#ddd}
+  body.theme-black{--bg:#000;--surface:#0d0d0d;--card:#111;--card2:#161616;--text:#eee;--muted:#555;--border:#1a1a1a}
+  body.theme-redblack{--bg:#080000;--surface:#130000;--card:#1c0000;--card2:#200000;--text:#fff;--muted:#cc4444;--border:#3a0000;--accent:#ff1a1a;--accent2:#cc0000}
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
+
+  /* TOPBAR */
+  .topbar{position:sticky;top:0;z-index:999;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+  .logo{display:flex;align-items:center;gap:8px;font-size:19px;font-weight:800;color:var(--accent)}
+  .logo span{color:var(--text);font-weight:400;font-size:16px}
+  .theme-row{display:flex;gap:7px;align-items:center}
+  .tb{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:.2s;flex-shrink:0}
+  .tb:hover{transform:scale(1.25);box-shadow:0 0 8px var(--accent)}
+  .tb.t-mix{background:conic-gradient(#ff6b00 0%,#9b59b6 33%,#e74c3c 66%,#fff 83%,#000 100%)}
+  .tb.t-white{background:#f5f5f5;border-color:#bbb}
+  .tb.t-black{background:#111;border-color:#333}
+  .tb.t-rb{background:linear-gradient(135deg,#000 50%,#cc0000 50%)}
+
+  /* SCREENS */
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* LOADING */
+  #sLoading{min-height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:radial-gradient(ellipse at center,#1a0505 0%,#0a0a0a 70%)}
+  .ld-diamond{font-size:72px;animation:floatd 2s ease-in-out infinite}
+  @keyframes floatd{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  .ld-title{font-size:26px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#ff6b00,#9b59b6,#e74c3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .ld-sub{font-size:13px;color:#888;letter-spacing:1px}
+  .ld-bar-wrap{width:220px;height:5px;background:#222;border-radius:5px;overflow:hidden;margin-top:4px}
+  .ld-bar{height:100%;width:0;background:linear-gradient(90deg,#ff6b00,#9b59b6);border-radius:5px}
+  .ld-pct{font-size:12px;color:#888}
+  .ld-dots{display:flex;gap:8px;margin-top:4px}
+  .ld-dot{width:8px;height:8px;border-radius:50%;background:#ff6b00;animation:dotpulse 1.4s infinite ease-in-out}
+  .ld-dot:nth-child(2){animation-delay:.2s;background:#9b59b6}
+  .ld-dot:nth-child(3){animation-delay:.4s;background:#e74c3c}
+  @keyframes dotpulse{0%,100%{transform:scale(.7);opacity:.4}50%{transform:scale(1.2);opacity:1}}
+
+  /* LOGIN */
+  #sLogin{min-height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  .login-hero{width:100%;max-width:420px;background:linear-gradient(135deg,#ff6b00 0%,#c0392b 40%,#9b59b6 100%);border-radius:20px 20px 0 0;padding:28px 24px;text-align:center;position:relative;overflow:hidden}
+  .login-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.08) 0%,transparent 70%)}
+  .login-hero-diamond{font-size:52px}
+  .login-hero h2{font-size:24px;font-weight:800;margin-top:8px}
+  .login-hero p{font-size:13px;opacity:.85;margin-top:4px}
+  .login-box{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:0 0 20px 20px;padding:24px}
+  .login-label{font-size:15px;font-weight:600;text-align:center;margin-bottom:4px}
+  .login-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px}
+  .social-btn{display:flex;align-items:center;gap:12px;width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card2);color:var(--text);cursor:pointer;font-size:14px;font-weight:600;transition:.2s;margin-bottom:10px}
+  .social-btn:hover{border-color:var(--accent);background:var(--card);transform:translateX(4px)}
+  .social-btn .sico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0}
+  .fb-ico{background:#1877f2;color:#fff}
+  .gm-ico{background:#fff;color:#ea4335;border:1px solid #ddd}
+  .ph-ico{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff}
+  .social-btn .arr{margin-left:auto;color:var(--accent)}
+  .divider{display:flex;align-items:center;gap:10px;margin:14px 0}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+  .divider span{font-size:12px;color:var(--muted);white-space:nowrap}
+  .inp{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:12px 14px;font-size:14px;outline:none;transition:.2s;margin-bottom:10px;font-family:inherit}
+  .inp:focus{border-color:var(--accent)}
+  .inp::placeholder{color:var(--muted)}
+  .login-note{background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);border-radius:10px;padding:12px;font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:8px;margin-top:14px}
+  .login-note i{color:var(--accent);font-size:16px;flex-shrink:0;margin-top:1px}
+
+  /* DASHBOARD */
+  #sDash{padding-bottom:80px}
+  .dash-banner{position:relative;overflow:hidden;background:linear-gradient(135deg,#ff6b00 0%,#c0392b 35%,#9b59b6 70%,#8e44ad 100%);padding:20px 18px}
+  .dash-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.06)}
+  .dash-banner::after{content:'';position:absolute;bottom:-50px;left:40%;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04)}
+  .banner-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .banner-left h3{font-size:20px;font-weight:800}
+  .banner-left p{font-size:13px;opacity:.85;margin-top:3px}
+  .banner-badge{background:rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-top:10px}
+  .banner-diamond-big{font-size:56px;position:relative;z-index:1}
+  .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-bottom:1px solid var(--border)}
+  .stat-item{padding:12px 8px;text-align:center;border-right:1px solid var(--border)}
+  .stat-item:last-child{border-right:none}
+  .stat-num{font-size:16px;font-weight:800;color:var(--accent)}
+  .stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+  .sec-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}
+  .sec-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px}
+  .sec-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600}
+  .products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px}
+  .pcard{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px 14px;position:relative;overflow:hidden;cursor:pointer;transition:.25s}
+  .pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .pcard:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,107,0,.18)}
+  .pcard-badge{position:absolute;top:12px;right:10px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700}
+  .badge-best{background:linear-gradient(135deg,#ff6b00,#e67e22);color:#fff}
+  .badge-hot{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff}
+  .badge-pop{background:linear-gradient(135deg,#9b59b6,#8e44ad);color:#fff}
+  .badge-save{background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff}
+  .pcard-icon{font-size:28px;margin-bottom:10px}
+  .pcard-name{font-size:13px;font-weight:700;color:var(--text)}
+  .pcard-amount{font-size:22px;font-weight:900;color:var(--accent);margin-top:3px}
+  .pcard-unit{font-size:11px;color:var(--muted);margin-top:3px}
+  .pcard-buy{width:100%;margin-top:12px;padding:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:.2s}
+  .pcard-buy:hover{opacity:.88}
+  .tg-section{padding:16px}
+  .tg-card{background:linear-gradient(135deg,#0088cc,#006aad);border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+  .tg-card::before{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.08)}
+  .tg-icon{font-size:36px;flex-shrink:0}
+  .tg-info h4{font-size:14px;font-weight:700}
+  .tg-info p{font-size:12px;opacity:.8;margin-top:3px}
+  .tg-btn{margin-left:auto;background:#fff;color:#0088cc;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s}
+  .tg-btn:hover{background:#e8f4fb}
+  .how-section{padding:0 16px 16px}
+  .how-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+  .how-steps{display:flex;flex-direction:column;gap:10px}
+  .how-step{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step-txt{font-size:13px;line-height:1.5;color:var(--muted)}
+  .step-txt strong{color:var(--text)}
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 0 10px;z-index:900}
+  .nav-itm{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);font-size:10px;padding:4px 12px;border-radius:10px;transition:.2s}
+  .nav-itm i{font-size:22px}
+  .nav-itm.active,.nav-itm:hover{color:var(--accent)}
+  .nav-itm.active{background:rgba(255,107,0,.1)}
+
+  /* MODAL */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:flex-end;justify-content:center}
+  .modal-bg.open{display:flex}
+  .modal{background:var(--surface);border-radius:24px 24px 0 0;padding:24px;width:100%;max-width:500px;border-top:1px solid var(--border);animation:slideup .3s ease}
+  @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .modal-head-title{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .modal-close{width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
+  .order-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px}
+  .order-row:not(:last-child){border-bottom:1px solid var(--border)}
+  .order-row .lbl{color:var(--muted)}
+  .order-row .val{font-weight:700;color:var(--accent)}
+  .buy-confirm-btn{width:100%;padding:14px;background:linear-gradient(135deg,#0088cc,#006aad);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
+  .buy-confirm-btn:hover{opacity:.9}
+  .buy-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
+
+  /* TOAST */
+  .toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#27ae60;color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+  .toast.show{opacity:1}
+
+  @media(max-width:380px){.products-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">💎 Diamond<span>Shop</span></div>
+  <div class="theme-row">
+    <div class="tb t-mix" id="tbMix" title="মিশ্র কালার"></div>
+    <div class="tb t-white" onclick="applyTheme('white')" title="সাদা"></div>
+    <div class="tb t-black" onclick="applyTheme('black')" title="কালো"></div>
+    <div class="tb t-rb" onclick="applyTheme('redblack')" title="কালো-লাল"></div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="screen active" id="sLoading">
+  <div class="ld-diamond">💎</div>
+  <div class="ld-title">DiamondShop BD</div>
+  <div class="ld-sub">সেরা দামে ডায়মন্ড কিনুন</div>
+  <div class="ld-bar-wrap"><div class="ld-bar" id="ldBar"></div></div>
+  <div class="ld-pct" id="ldPct">0%</div>
+  <div class="ld-dots">
+    <div class="ld-dot"></div>
+    <div class="ld-dot"></div>
+    <div class="ld-dot"></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="sLogin">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 52px);padding:20px">
+    <div class="login-hero">
+      <div class="login-hero-diamond">💎</div>
+      <h2>Diamond Shop BD</h2>
+      <p>Free Fire ডায়মন্ড সবচেয়ে কম দামে</p>
+    </div>
+    <div class="login-box">
+      <div class="login-label">লগইন করুন</div>
+      <div class="login-sub">Username বা Password লাগবে না — সরাসরি লগইন করুন</div>
+      <button class="social-btn" id="fbBtn">
+        <div class="sico fb-ico">f</div>
+        <div style="text-align:left">
+          <div>Facebook দিয়ে লগইন</div>
+          <div style="font-size:11px;font-weight:400;opacity:.6">আপনার Facebook অ্যাকাউন্ট ব্যবহার করুন</div>
+        </div>
+        <i class="ti ti-chevron-right arr"></i>
+      </button>
+      <button class="social-btn" id="gmBtn">
+        <div class="sico gm-ico">G</div>
+        <div style="text-align:left">
+          <div>Gmail দিয়ে লগইন</div>
+          <div style="font-size:11px;font-weight:400;opacity:.6">আপনার Google অ্যাকাউন্ট ব্যবহার করুন</div>
+        </div>
+        <i class="ti ti-chevron-right arr"></i>
+      </button>
+      <div class="divider"><span>অথবা ফোন নম্বর দিয়ে</span></div>
+      <input class="inp" type="tel" id="phoneInp" placeholder="01XXXXXXXXX — ফোন নম্বর দিন">
+      <div id="otpRow" style="display:none">
+        <input class="inp" type="text" id="otpInp" placeholder="OTP কোড দিন (demo: 1234)">
+      </div>
+      <div id="phoneStep1">
+        <button class="pcard-buy" style="border-radius:12px;padding:12px;border:none" onclick="sendOtp()">
+          <i class="ti ti-device-mobile"></i> OTP পাঠান
+        </button>
+      </div>
+      <div id="phoneStep2" style="display:none">
+        <button class="pcard-buy" style="border-radius:12px;padding:12px;border:none" onclick="verifyOtp()">
+          <i class="ti ti-check"></i> OTP যাচাই করুন
+        </button>
+      </div>
+      <div class="login-note">
+        <i class="ti ti-shield-check"></i>
+        <div>আমরা আপনার তথ্য সুরক্ষিত রাখি। কোনো পাসওয়ার্ড সংরক্ষণ করা হয় না।</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="screen" id="sDash">
+  <div class="dash-banner">
+    <div class="banner-top">
+      <div class="banner-left">
+        <h3>স্বাগতম, <span id="userNameDisplay">বন্ধু</span>! 👋</h3>
+        <p>আজকের সেরা ডিলগুলো দেখুন</p>
+        <div class="banner-badge">🔥 বিশেষ অফার চলছে!</div>
+      </div>
+      <div class="banner-diamond-big">💎</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">৭+</div><div class="stat-lbl">প্যাকেজ</div></div>
+    <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-lbl">সার্ভিস</div></div>
+    <div class="stat-item"><div class="stat-num">৳0.50</div><div class="stat-lbl">সর্বনিম্ন</div></div>
+  </div>
+
+  <div class="sec-header">
+    <div class="sec-title">💎 ডায়মন্ড প্যাকেজ</div>
+    <div class="sec-badge">HOT</div>
+  </div>
+  <div class="products-grid">
+    <div class="pcard" onclick="openBuy('100 ডায়মন্ড','৳ 70','100 Diamond Pack','৳0.70/ডায়মন্ড')">
+      <div class="pcard-icon">💎</div>
+      <div class="pcard-name">100 ডায়মন্ড</div>
+      <div class="pcard-amount">৳ 70</div>
+      <div class="pcard-unit">১০০ টি ডায়মন্ড</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+    <div class="pcard" onclick="openBuy('500 ডায়মন্ড','৳ 350','500 Diamond Pack','৳0.70/ডায়মন্ড')">
+      <div class="pcard-badge badge-best">BEST</div>
+      <div class="pcard-icon">💎💎</div>
+      <div class="pcard-name">500 ডায়মন্ড</div>
+      <div class="pcard-amount">৳ 350</div>
+      <div class="pcard-unit">৫০০ টি ডায়মন্ড</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+    <div class="pcard" onclick="openBuy('1000 ডায়মন্ড','৳ 500','1000 Diamond Pack','৳0.50/ডায়মন্ড — সাশ্রয়!')">
+      <div class="pcard-badge badge-hot">সেভ ৩০%</div>
+      <div class="pcard-icon">💎💎💎</div>
+      <div class="pcard-name">1000 ডায়মন্ড</div>
+      <div class="pcard-amount">৳ 500</div>
+      <div class="pcard-unit">সবচেয়ে সাশ্রয়ী!</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+    <div class="pcard" onclick="openBuy('2× Weekly','৳ 260','2× Weekly Pass','১৪ দিনের সাবস্ক্রিপশন')">
+      <div class="pcard-badge badge-save">NEW</div>
+      <div class="pcard-icon">📅✨</div>
+      <div class="pcard-name">2× Weekly</div>
+      <div class="pcard-amount">৳ 260</div>
+      <div class="pcard-unit">১৪ দিনের সাবস্ক্রিপশন</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+  </div>
+
+  <div class="sec-header" style="margin-top:8px">
+    <div class="sec-title">📅 পাস প্যাকেজ</div>
+    <div class="sec-badge">পপুলার</div>
+  </div>
+  <div class="products-grid">
+    <div class="pcard" onclick="openBuy('Weekly Pass','৳ 145','Weekly Pass','৭ দিনের জন্য')">
+      <div class="pcard-icon">📅</div>
+      <div class="pcard-name">Weekly Pass</div>
+      <div class="pcard-amount">৳ 145</div>
+      <div class="pcard-unit">৭ দিন</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+    <div class="pcard" onclick="openBuy('Monthly Pass','৳ 720','Monthly Pass','৩০ দিনের জন্য')">
+      <div class="pcard-badge badge-pop">পপুলার</div>
+      <div class="pcard-icon">🗓️</div>
+      <div class="pcard-name">Monthly Pass</div>
+      <div class="pcard-amount">৳ 720</div>
+      <div class="pcard-unit">৩০ দিন</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+    <div class="pcard" onclick="openBuy('2× Monthly','৳ 1200','2× Monthly Pass','৬০ দিনের জন্য')">
+      <div class="pcard-badge badge-best">VIP</div>
+      <div class="pcard-icon">🗓️✨</div>
+      <div class="pcard-name">2× Monthly</div>
+      <div class="pcard-amount">৳ 1200</div>
+      <div class="pcard-unit">৬০ দিন</div>
+      <button class="pcard-buy"><i class="ti ti-shopping-cart"></i> কিনুন</button>
+    </div>
+  </div>
+
+  <div class="tg-section">
+    <div class="tg-card">
+      <div class="tg-icon">✈️</div>
+      <div class="tg-info">
+        <h4>সাহায্য দরকার?</h4>
+        <p>Telegram-এ যোগাযোগ করুন, ২৪/৭ সার্ভিস</p>
+      </div>
+      <button class="tg-btn" onclick="window.open('https://t.me/imahackerZ','_blank')">যোগাযোগ →</button>
+    </div>
+  </div>
+
+  <div class="how-section">
+    <div class="how-title"><i class="ti ti-info-circle" style="color:var(--accent)"></i> কীভাবে কিনবেন?</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">১</div>
+        <div class="step-txt"><strong>প্যাকেজ বেছে নিন</strong> — আপনার পছন্দের ডায়মন্ড বা পাস প্যাকেজে ক্লিক করুন।</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">২</div>
+        <div class="step-txt"><strong>Player UID দিন</strong> — আপনার Free Fire Game UID নম্বর দিন।</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">৩</div>
+        <div class="step-txt"><strong>Telegram-এ মেসেজ করুন</strong> — অর্ডার পাঠান, ৫ মিনিটের মধ্যে ডেলিভারি পাবেন।</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-itm active"><i class="ti ti-home"></i><span>হোম</span></div>
+    <div class="nav-itm" onclick="window.open('https://t.me/imahackerZ','_blank')"><i class="ti ti-receipt"></i><span>অর্ডার</span></div>
+    <div class="nav-itm" onclick="window.open('https://t.me/imahackerZ','_blank')"><i class="ti ti-headset"></i><span>সাপোর্ট</span></div>
+    <div class="nav-itm" onclick="showToast('প্রোফাইল শীঘ্রই আসছে!')"><i class="ti ti-user"></i><span>প্রোফাইল</span></div>
+  </div>
+</div>
+
+<!-- BUY MODAL -->
+<div class="modal-bg" id="buyModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title">💎 অর্ডার করুন</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="order-card">
+      <div class="order-row"><span class="lbl">প্যাকেজ</span><span class="val" id="mName">-</span></div>
+      <div class="order-row"><span class="lbl">মূল্য</span><span class="val" id="mPrice">-</span></div>
+      <div class="order-row"><span class="lbl">বিবরণ</span><span class="val" id="mDesc" style="font-size:12px">-</span></div>
+    </div>
+    <input class="inp" type="text" id="uidInp" placeholder="আপনার Free Fire Player UID দিন">
+    <input class="inp" type="text" id="noteInp" placeholder="বিশেষ নোট (ঐচ্ছিক)">
+    <button class="buy-confirm-btn" onclick="confirmOrder()">
+      <i class="ti ti-brand-telegram"></i> Telegram-এ অর্ডার পাঠান
+    </button>
+    <div class="buy-note">অর্ডার করার পর ৫ মিনিটের মধ্যে ডেলিভারি পাবেন।</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let themeIndex = 0;
+const themeOrder = ['mix','white','black','redblack'];
+
+function applyTheme(t){
+  document.body.className='';
+  if(t==='white') document.body.classList.add('theme-white');
+  else if(t==='black') document.body.classList.add('theme-black');
+  else if(t==='redblack') document.body.classList.add('theme-redblack');
+}
+
+document.getElementById('tbMix').addEventListener('click',function(){
+  themeIndex=(themeIndex+1)%themeOrder.length;
+  applyTheme(themeOrder[themeIndex]);
+});
+
+// LOADING
+(function(){
+  const bar=document.getElementById('ldBar');
+  const pct=document.getElementById('ldPct');
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*3+1;
+    if(p>=100){p=100;clearInterval(iv);setTimeout(()=>showScreen('sLogin'),400)}
+    bar.style.width=p+'%';
+    pct.textContent=Math.floor(p)+'%';
+  },60);
+})();
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showDash(name){
+  document.getElementById('userNameDisplay').textContent=name||'বন্ধু';
+  showScreen('sDash');
+}
+
+// FB LOGIN
+document.getElementById('fbBtn').onclick=function(){
+  showToast('Facebook দিয়ে লগইন হচ্ছে...');
+  setTimeout(()=>showDash('Facebook User'),1500);
+};
+
+// GMAIL LOGIN
+document.getElementById('gmBtn').onclick=function(){
+  showToast('Gmail দিয়ে লগইন হচ্ছে...');
+  setTimeout(()=>showDash('Gmail User'),1500);
+};
+
+// PHONE OTP
+function sendOtp(){
+  const ph=document.getElementById('phoneInp').value.trim();
+  if(!/^01[3-9]\d{8}$/.test(ph)){showToast('সঠিক বাংলাদেশি নম্বর দিন (01XXXXXXXXX)','error');return}
+  showToast('OTP পাঠানো হয়েছে! (demo কোড: 1234)');
+  document.getElementById('otpRow').style.display='block';
+  document.getElementById('phoneStep1').style.display='none';
+  document.getElementById('phoneStep2').style.display='block';
+}
+function verifyOtp(){
+  const otp=document.getElementById('otpInp').value.trim();
+  if(otp==='1234'){showDash('Phone User')}
+  else{showToast('ভুল OTP! demo কোড হলো: 1234','error')}
+}
+
+// BUY MODAL
+let currentItem={};
+function openBuy(name,price,full,desc){
+  currentItem={name,price,full};
+  document.getElementById('mName').textContent=full;
+  document.getElementById('mPrice').textContent=price;
+  document.getElementById('mDesc').textContent=desc||'';
+  document.getElementById('uidInp').value='';
+  document.getElementById('noteInp').value='';
+  document.getElementById('buyModal').classList.add('open');
+}
+function closeModal(){document.getElementById('buyModal').classList.remove('open')}
+document.getElementById('buyModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+function confirmOrder(){
+  const uid=document.getElementById('uidInp').value.trim();
+  const note=document.getElementById('noteInp').value.trim();
+  if(!uid){showToast('Player UID দিন!','error');return}
+  const msg=`💎 নতুন অর্ডার!\n\nপ্যাকেজ: ${currentItem.full}\nমূল্য: ${currentItem.price}\nPlayer UID: ${uid}${note?'\nনোট: '+note:''}`;
+  window.open('https://t.me/imahackerZ?text='+encodeURIComponent(msg),'_blank');
+  closeModal();
+  showToast('অর্ডার পাঠানো হয়েছে! ✅');
+}
+
+// TOAST
+let toastTimer;
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='error'?'#e74c3c':'#27ae60';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
